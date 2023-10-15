@@ -1,11 +1,12 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kiridharan/controller"
 	"github.com/kiridharan/initializers"
+	"github.com/kiridharan/routes"
 )
 
 func init() {
@@ -15,17 +16,12 @@ func init() {
 }
 
 func main() {
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pings",
-		})
-	})
-
-	r.POST("/signup", controller.SignUp)
-
+	env := os.Getenv("ENV")
+	log.Println("ENV: ", env)
 	port := os.Getenv("PORT")
-	if port == "" {
+	r := gin.Default()
+	routes.Routes(r)
+	if port == "" || env == "development" {
 		port = "8080"
 	}
 	r.Run(":" + port + "")
